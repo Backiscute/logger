@@ -1,6 +1,6 @@
 {
   "name": "@backs/logger",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "An advanced logger using winston & colorette behind the scenes",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -28,8 +28,8 @@
   ],
   "author": {
     "name": "Back",
-    "email": "back@backthe.dev",
-    "url": "https://backthe.dev"
+    "email": "me@back.rs",
+    "url": "https://back.rs"
   },
   "license": "MIT",
   "bugs": {
