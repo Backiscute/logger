@@ -217,8 +217,8 @@ export class Logger<T extends string[] = ["error", "warn", "debug", "log", "info
     }
 
     resolveLevel(level: string) {
-        const longest = Math.max(...Object.keys(this.options.levels!).map(l => `[${l}]`.length))
-        return `[${level}]`.padEnd(longest, " ")
+        const longest = Math.max(...Object.keys(this.options.levels!).map(l => `[${l === "syslog" ? "log" : l}]`.length))
+        return `[${level === "syslog" ? "log" : level}]`.padEnd(longest, " ")
     }
 
     stringifyArg(arg: any) {
