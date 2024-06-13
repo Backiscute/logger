@@ -244,6 +244,7 @@ export class Logger<T extends string[] = ["error", "warn", "debug", "log", "info
         if (!matchedArguments) return message;
 
         for (const match of matchedArguments) {
+            argumentRegex.lastIndex = 0;
             const { color, modifiers } = argumentRegex.exec(match)?.groups ?? {};
             if (!color && !modifiers) continue;
             const colorFn = colorMap[color as (keyof typeof colorMap)];
