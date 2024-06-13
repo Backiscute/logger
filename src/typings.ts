@@ -6,6 +6,7 @@ export interface LoggerOptions<T extends string[]> {
     levels?: T;
     colors?: Record<T[number], Color>;
     transports?: transport[];
+    log?: Record<T[number], boolean | (() => boolean)>;
     handlers?: Record<T[number], (logger: WinstonLogger, message: any, ...args: any[]) => void>;
     disableColors?: boolean;
 }
