@@ -13,7 +13,6 @@ import {
 import { LoggerOptions, TypedLogger } from "./typings";
 import { table, createStream as createTableStream, TableUserConfig, StreamUserConfig } from "table";
 import progress from "progress";
-import stripAnsi from "strip-ansi";
 import moment from "moment";
 
 export const colorMap = {
@@ -117,35 +116,38 @@ export class Logger<T extends string[] = ["error", "warn", "debug", "log", "info
     }
 
     constructor(options?: LoggerOptions<T>) {
-        this.options = options ?? {};
-        this.colorEnabled = process.env.NO_COLOR && process.env.NO_COLOR !== "" ? false : isColorSupported ? !(this.options.disableColors ?? false) : false;
-        if (!this.options.levels) { 
-            this.options.log ??= { debug: () => process.env.NODE_ENV === "debug" } as Record<T[number], boolean | (() => boolean)>;
-            this.options.log["debug"] ??= () => process.env.NODE_ENV === "debug";
-        }
-        this.options.levels ??= Object.keys(this.DEFAULT_LEVELS) as T;
-        this.options.colors ??= this.DEFAULT_COLORS as Record<T[number], Color>;
-        this.options.transports ??= this.DEFAULT_TRANSPORTS;
-        this.logger = createWinstonLogger({
-            levels: this.options.levels.reduce((acc, level, index) => ({ ...acc, [level === "log" ? "syslog" : level]: index }), {} as Record<T[number], number>),
-            transports: this.options.transports
-        });
+        import("strip-ansi").then((i) => {
+            const stripAnsi = i.default;
+            this.options = options ?? {};
+            this.colorEnabled = process.env.NO_COLOR && process.env.NO_COLOR !== "" ? false : isColorSupported ? !(this.options.disableColors ?? false) : false;
+            if (!this.options.levels) { 
+                this.options.log ??= { debug: () => process.env.NODE_ENV === "debug" } as Record<T[number], boolean | (() => boolean)>;
+                this.options.log["debug"] ??= () => process.env.NODE_ENV === "debug";
+            }
+            this.options.levels ??= Object.keys(this.DEFAULT_LEVELS) as T;
+            this.options.colors ??= this.DEFAULT_COLORS as Record<T[number], Color>;
+            this.options.transports ??= this.DEFAULT_TRANSPORTS;
+            this.logger = createWinstonLogger({
+                levels: this.options.levels.reduce((acc, level, index) => ({ ...acc, [level === "log" ? "syslog" : level]: index }), {} as Record<T[number], number>),
+                transports: this.options.transports
+            });
 
-        const shouldLog = (b: boolean | (() => boolean)) => typeof b === "function" ? b() : b;
-        
-        for (const level of this.options.levels) {
-            this[level] = (this.options.handlers?.[level] ? ((message: any, ...args: any[]) => {
-                if (!shouldLog(this.options.log?.[level] ?? true)) return;
-                this.options.handlers?.[level](this.logger[level === "log" ? "syslog" : level], message, ...args);
-            }) : undefined) ?? ((message: any, ...args: any[]) => {
-                if (!shouldLog(this.options.log?.[level] ?? true)) return;
-                message = this.formatArgs(this.stringifyArg(message), args);
-                this.logger[level === "log" ? "syslog" : level]({
-                    message: message,
-                    rawMessage: stripAnsi(message)
-                });
-            })
-        }
+            const shouldLog = (b: boolean | (() => boolean)) => typeof b === "function" ? b() : b;
+            
+            for (const level of this.options.levels) {
+                this[level] = (this.options.handlers?.[level] ? ((message: any, ...args: any[]) => {
+                    if (!shouldLog(this.options.log?.[level] ?? true)) return;
+                    this.options.handlers?.[level](this.logger[level === "log" ? "syslog" : level], message, ...args);
+                }) : undefined) ?? ((message: any, ...args: any[]) => {
+                    if (!shouldLog(this.options.log?.[level] ?? true)) return;
+                    message = this.formatArgs(this.stringifyArg(message), args);
+                    this.logger[level === "log" ? "syslog" : level]({
+                        message: message,
+                        rawMessage: stripAnsi(message)
+                    });
+                })
+            }
+        })
     }
 
     private DEFAULT_LEVELS = {
@@ -167,7 +169,7 @@ export class Logger<T extends string[] = ["error", "warn", "debug", "log", "info
     private DEFAULT_FORMAT = format.combine(
         format.timestamp(),
         format.printf(({ timestamp, level, message }) => {
-            return `${this.color(gray, moment(timestamp).format("MM/DD/YYYY HH:mm:ss z"))} ${this.color(this.DEFAULT_COLORS[level], this.resolveLevel(level))}: ${message}`;
+            return `${this.color(gray, moment(timestamp).format("MM/DD/YYYY HH:mm:ss z"))} ${this.color(this.DEFAULT_COLORS[level === "syslog" ? "log" : level], this.resolveLevel(level))}: ${message}`;
         })
     );
     
