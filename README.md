@@ -5,7 +5,6 @@ It's a package that facilitates logging to console by allowing you to add many d
 Uses under the hood:
 - winston
 - colorette
-- strip-ansi
 - progress
 - table
 - moment

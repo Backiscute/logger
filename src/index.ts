@@ -15,16 +15,7 @@ import { table, createStream as createTableStream, TableUserConfig, StreamUserCo
 import progress from "progress";
 import moment from "moment";
 
-let stripAnsi: (str: string) => string;
-
-const loadStripAnsi = async () => {
-    if (!stripAnsi) {
-        stripAnsi = (await import('strip-ansi')).default;
-    }
-    return stripAnsi;
-};
-
-loadStripAnsi();
+const stripAnsi = (str: string) => str.replace(/[\u001B\u009B][[\]()#;?]*(?:(?:(?:(?:;[-a-zA-Z\d\/#&.:=?%@~_]+)*|[a-zA-Z\d]+(?:;[-a-zA-Z\d\/#&.:=?%@~_]*)*)?\u0007)|(?:(?:\d{1,4}(?:;\d{0,4})*)?[\dA-PR-TZcf-nq-uy=><~]))/g, "");
 
 export const colorMap = {
     b: black,
