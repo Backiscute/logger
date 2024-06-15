@@ -19,7 +19,7 @@ Uses under the hood:
     /* Prints
         Test
         This text is blue in bold.
-    /*
+    */
 ```
 > TS
 ```ts
@@ -31,7 +31,7 @@ Uses under the hood:
     /* Prints
         Test
         This text is blue in bold.
-    /*
+    */
 ```
 ## Customization
 Since it uses *winston* under the hood, you can use custom levels, colors, handlers, transports. You can also disable colors if needed.
@@ -40,7 +40,7 @@ Check *options* down below.
 - `levels`?: `string[]` - Array of winstom levels from most important to least important. Defaults to `["error", "warn", "debug", "log", "info"]`.
 - `colors`?: `Record<string, Color>` - An object that contains a function that takes a string or number and returns a string, for each log level. Defaults to `{ error: red, warn: yellow, debug: magenta, log: blue, info: green }`.
 - `transports`?: `transports[]` - Array of winston transports. Defaults to a `Console` transport and `File` transport *(error level only)* with custom formats.
-- `log`?: `Record<T[number], boolean | (() => boolean)>` - An object containing levels as values and a boolean or a function returning a boolean as value to decide whether or not to log the file to the console.
+- `log`?: `Record<T[number], boolean | (() => boolean)>` - An object containing levels as values and a boolean or a function returning a boolean as value to decide whether or not to log to the transports provided.
 - `handlers`?: `Record<string, (logger: WinstonLogger, message: any, ...args: any[]) => void>` - An object containing objects for each level containing a function to handle that level. Provides the winston logger, a message which can be any type, and an array of arguments.
 - `disableColors`?: `boolean` - Whether or not to disable colors in the console.
 ## Color & Modifiers

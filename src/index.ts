@@ -103,7 +103,7 @@ export const modifiersMap = {
     reset: reset
 }
 
-export const argumentRegex = /%(?<color>[A-Z]+)?(?:_(?<modifiers>[A-Z]+))?/ig
+export const argumentRegex = /%(?<color>[A-Z]+)?(?:_(?<modifiers>[A-Z]+(,[A-Z])*))?/ig
 
 export default function createLogger<T extends string[] = ["error", "warn", "debug", "log", "info"]>(options?: LoggerOptions<T>) {
     return new Logger(options) as TypedLogger<T>;
