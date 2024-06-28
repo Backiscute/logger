@@ -103,7 +103,7 @@ export const modifiersMap = {
     reset: reset
 }
 
-export const argumentRegex = new RegExp(`%(?<color>(?:${Object.keys(colorMap).join("|")}))?(?:_(?<modifiers>(?:${Object.keys(modifiersMap).join("|")})(,(?:${Object.keys(modifiersMap).join("|")}))*))?`, "ig")
+export const argumentRegex = new RegExp(`%(?<color>(?:${Object.keys(colorMap).sort((a,b) => b.length - a.length).join("|")}))?(?:_(?<modifiers>(?:${Object.keys(modifiersMap).sort((a,b) => b.length - a.length).join("|")})(,(?:${Object.keys(modifiersMap).sort((a,b) => b.length - a.length).join("|")}))*))?`, "ig")
 
 export default function createLogger<T extends string[] = ["error", "warn", "debug", "log", "info"]>(options?: LoggerOptions<T>) {
     return new Logger(options) as TypedLogger<T>;
