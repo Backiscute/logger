@@ -13,7 +13,7 @@ import {
 import { LoggerOptions, TypedLogger } from "./typings";
 import { table, createStream as createTableStream, TableUserConfig, StreamUserConfig } from "table";
 import progress from "progress";
-import moment from "moment";
+import moment, { MomentInput } from "moment";
 
 const stripAnsi = (str: string) => str.replace(/[\u001B\u009B][[\]()#;?]*(?:(?:(?:(?:;[-a-zA-Z\d\/#&.:=?%@~_]+)*|[a-zA-Z\d]+(?:;[-a-zA-Z\d\/#&.:=?%@~_]*)*)?\u0007)|(?:(?:\d{1,4}(?:;\d{0,4})*)?[\dA-PR-TZcf-nq-uy=><~]))/g, "");
 
@@ -168,7 +168,7 @@ export class Logger<T extends string[] = ["error", "warn", "debug", "log", "info
     private DEFAULT_FORMAT = format.combine(
         format.timestamp(),
         format.printf(({ timestamp, level, message }) => {
-            return `${this.color(gray, moment(timestamp).format("MM/DD/YYYY HH:mm:ss z"))} ${this.color(this.DEFAULT_COLORS[level === "syslog" ? "log" : level], this.resolveLevel(level))}: ${message}`;
+            return `${this.color(gray, moment(timestamp as MomentInput).format("MM/DD/YYYY HH:mm:ss z"))} ${this.color(this.DEFAULT_COLORS[level === "syslog" ? "log" : level], this.resolveLevel(level))}: ${message}`;
         })
     );
     

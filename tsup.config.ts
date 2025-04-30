@@ -8,6 +8,7 @@ export default defineConfig({
     sourcemap: true,
     clean: true,
     shims: true,
+    minify: true,
     esbuildOptions: (options) => {
         options.footer = {
             js: `
